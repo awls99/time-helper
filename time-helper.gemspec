@@ -10,5 +10,5 @@ Gem::Specification.new do |s|
   s.email       = 'awls99@gmail.com'
   s.files       = ["lib/time-helper.rb"]
   s.homepage    =
-    'http://rubygems.org/gems/hola'
+    'https://github.com/awls99/time-helper'
 end
