@@ -1,0 +1,33 @@
+This gem adds a few methods to Time, both instance and class.
+It's not great, but makes my life easier on a few cucumber based projects.
+There's a method Time.strtotime which takes a date(time) string and turns it into a time object.
+Also method add and substract to the instance. (Important, these methods do not account for leap years and months, etc, one month is 30 days and 1 year is 365 days.)
+
+Usage examples:
+
+Time.strtotime date_string
+
+| date string |  resulting time object |
+| 24-12-2011 | Time.local(2011,12,24) |
+| 2011-12-24 | Time.local(2011,12,24) |
+| 24/12/2011 | Time.local(2011,12,24) |
+| 2011/12/24 | Time.local(2011,12,24) |
+| 24122011 | Time.local(2011,12,24) |
+| 20111224 | Time.local(2011,12,24) |
+| 30042012 | Time.local(2012,04,30) |
+| 20120430 | Time.local(2012,04,30) |
+| 01052012 | Time.local(2012,05,01) |
+| 20120501 | Time.local(2012,05,01) |
+| 24-12-2011 22:10:54 | Time.local(2011,12,24,22,10,54) |
+| 2011-12-24_12:10:54 | Time.local(2011,12,24,12,10,54) |
+| 24/12/2011-12:20:31 | Time.local(2011,12,24,12,20,31) |
+| 01052012122031 | Time.local(2012,05,01,12,20,31) |
+| 20120501122031 | Time.local(2012,05,01,12,20,31) |
+
+
+using .add or .substract
+
+|starting object | method | arguments | resulting object |
+| Time.local(2011,12,24,22,10,54) | add | {:year => 2, :month => 1 } | Time.local(2011,12,24,22,10,54) + (2*60*60*24*365 + 60*60*24*30) |
+| Time.local(2012,05,01,12,20,31) | substract | {:month => 2, :day => 3} | Time.local(2012,05,01,12,20,31) - (60*60*24*30*2 + 60*60*24*3)|
+| Time.local(2011,12,24,22,10,54) | add | {:day => 1, :hour => 3} |Time.local(2011,12,24,22,10,54) + (60*60*24 + 60*60*3) |

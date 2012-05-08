@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
     also methods add and substract that allow you to do some easy date math (doesn't take leap months/years into account)"
   s.authors     = ["Arthur Silva"]
   s.email       = 'awls99@gmail.com'
-  s.files       = ["lib/time-helper.rb"]
+  s.files       = %w[lib/time-helper.rb README]
   s.homepage    =
     'https://github.com/awls99/time-helper'
 end
