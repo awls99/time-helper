@@ -49,3 +49,12 @@ When /^I try with hash to ((?:add)|(?:substract)) (.+?)$/ do |operation, hash|
     op_hash = eval hash
     @result = time.method( operation ).call( op_hash )
 end
+Given /^I want "([^"]*)"'s date$/ do |day|
+    @result = Time.method( day ).call
+end
+
+Then /^my Time object should be like "([^"]*)"$/ do |obj|
+    expected = eval obj
+    @result.to_i.should == expected.to_i
+end
+

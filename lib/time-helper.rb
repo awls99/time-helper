@@ -1,8 +1,11 @@
-#@version 1.0
+#@version 1.0.0
 #@author Arthur
 class Time
     #class methods
     class << self
+        #@param string [String] a datetime string with many possible formats 
+        #@see Time#valid_datetime? or the feature file for valid format
+        #@return [Time] set in the date of the string passed
         def strtotime string
             abort 'invalid date' unless valid_datetime? string
             h,m,s = 0,0,0
@@ -35,12 +38,20 @@ class Time
             end
             
         end
-
+        #@param string [String] datetime string
+        #@return [Boolean] 
         def valid_datetime? string
             return false unless string.match /\d{2,4}.?\d{2}.?\d{2,4}(?:.?\d{2}:?\d{2}:?\d{2})?/
             return true
         end
-
+        #@return [Time] Time object set 24 hours ago
+        def tomorrow
+            return Time.now.add(:day => 1 )
+        end
+        #@return [Time] return time object 24 hours from now
+        def yesterday
+            return Time.now.substract(:day => 1 )
+        end
         private
             def get_time_array time
                 h,m,s = 0,0,0
@@ -129,11 +140,25 @@ class Time
             end
     end
 
-    #instance methods
+    #@param params [Hash] hash of time to be added {:time => amount } (can take several at once)
+    #@return [Time] new time object with date set to the result 
+    # @example add time
+    #  t = Time.now()
+    #  t.add(:year => 1 ) #=> a time object set for 365 days from now
+    #  t.add(:year => 2, :day => 1 ) #=>  a time object set 731 days from now    
+    #  accepts :year :month :day :minute :hour :second :week
     def add params
         seconds = get_seconds params
         return self + seconds
     end
+
+    #@param params [Hash] hash of time to be added {:time => amount } (can take several at once)
+    #@return [Time] new time object with date set to the result 
+    # @example substract time
+    #  t = Time.now()
+    #  t.substract(:year => 1 ) returns a time object set for 365 days ago
+    #  t.substract(:year => 2, :day => 1 ) returns a time object set 731 ago
+    #  accepts :year :month :day :minute :hour :second :week
     def substract params
         seconds = get_seconds params
         return self - seconds

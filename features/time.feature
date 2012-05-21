@@ -67,3 +67,14 @@ Examples:
 | Time.local(2012,05,01,12,20,31) | substract | {:month => 2, :day => 3} | Time.local(2012,05,01,12,20,31) - (60*60*24*30*2 + 60*60*24*3)|
 | Time.local(2011,12,24,22,10,54) | add | {:day => 1, :hour => 3} |Time.local(2011,12,24,22,10,54) + (60*60*24 + 60*60*3) |
  
+
+
+@time
+Scenario: Get Tomorrow's date
+Given I want "tomorrow"'s date
+Then my Time object should be like "Time.now.add(:day => 1)"
+
+@time
+Scenario: Get Yesterday's date
+Given I want "yesterday"'s date
+Then my Time object should be like "Time.now.substract(:day => 1)"
