@@ -78,3 +78,19 @@ Then my Time object should be like "Time.now.add(:day => 1)"
 Scenario: Get Yesterday's date
 Given I want "yesterday"'s date
 Then my Time object should be like "Time.now.substract(:day => 1)"
+
+
+@time @parse
+Scenario Outline: Parse other time strings
+Given I have a complete time string "<string>" then it should be like "<time_parse>"
+
+Examples:
+| string | time_parse |
+| 2012-05-30T12:11:38.694+01:00 | Time.parse('2012-05-30T12:11:38.694+01:00') |
+| Wed May 30 11:11:38 UTC 2012 | Time.parse('Wed May 30 11:11:38 UTC 2012') |
+| Wed May 30 11:11:38 GMT 2012 | Time.parse('Wed May 30 11:11:38 GMT 2012') |
+
+@time @errors
+Scenario: Testing Time Errors
+Given I have the string "3247y9208u4" 
+When I try to run strtotime I should get a InvalidStringFormat 

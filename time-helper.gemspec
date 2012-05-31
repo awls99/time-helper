@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'time-helper'
-  s.version     = '1.2'
-  s.date        = '2012-05-02'
+  s.version     = '1.3'
+  s.date        = '2012-05-30'
   s.summary     = 'A few helper functions for the Time class, useful on ruby 1.8'
   s.description = "Adds a few methods to the Time class, more significant:\n
     strtotime which returns a Time object based on a string.\n

@@ -1,26 +1,33 @@
-#@version 1.0.0
+#@version 1.3.0
 #@author Arthur
 class Time
+    require 'time'
     #class methods
     class << self
-        #@param string [String] a datetime string with many possible formats 
+        #@param string [String] a datetime string with many possible formats
         #@see Time#valid_datetime? or the feature file for valid format
         #@return [Time] set in the date of the string passed
         def strtotime string
-            abort 'invalid date' unless valid_datetime? string
+            unless valid_datetime? string
+                begin
+                    return Time.parse(string)
+                rescue 
+                    raise InvalidTimeStringFormat
+                end
+            end
             h,m,s = 0,0,0
 
             if date_or_dt( string ) == :datetime
                 separator = dt_get_separator string
                 date, time = 0, 0
-                if separator 
+                if separator
                     date, time = string.split( separator )
                 else
                     date, time = string[0..7], string[8..13]
                 end
                 h,m,s  = get_time_array time
                 string = date
-            end    
+            end
             separator = get_separator string
             order     = get_order string
             if separator
@@ -28,7 +35,7 @@ class Time
                 if order == :dmy
                     return Time.local( yd, mo, dy,h,m,s )
                 elsif order == :ymd
-                    return Time.local( dy, mo, yd,h,m,s) 
+                    return Time.local( dy, mo, yd,h,m,s)
                 end
             end
             if order == :dmy
@@ -36,12 +43,12 @@ class Time
             elsif order == :ymd
                 return Time.local( string[0..3].to_i, string[4..5].to_i, string[6..7].to_i,h,m,s )
             end
-            
+
         end
         #@param string [String] datetime string
-        #@return [Boolean] 
+        #@return [Boolean]
         def valid_datetime? string
-            return false unless string.match /\d{2,4}.?\d{2}.?\d{2,4}(?:.?\d{2}:?\d{2}:?\d{2})?/
+            return false unless string.match /^\d{2,4}.?\d{2}.?\d{2,4}(?:.?\d{2}:?\d{2}:?\d{2})?$/
             return true
         end
         #@return [Time] Time object set 24 hours ago
@@ -51,6 +58,13 @@ class Time
         #@return [Time] return time object 24 hours from now
         def yesterday
             return Time.now.substract(:day => 1 )
+        end
+        #Converts a Date in to utc format
+        #
+        #@param value [String] 
+        #@return [Time] in UTC
+        def utc_parse value
+            Time.strtotime(value).utc
         end
         private
             def get_time_array time
@@ -99,12 +113,12 @@ class Time
             #see Time#get_order
             def get_dt_order string
                 separator = dt_get_separator string
-                if separator 
+                if separator
                     return get_order( string.split( separator )[0] )
                 end
                 return get_order( string[0..7] )
             end
-            
+
             #@param string [String] date string
             #@return [symbol] order dmy or ymd
             def get_order string
@@ -124,14 +138,14 @@ class Time
                     return no_separator_order string
                 end
             end
-             
+
             #@param string [String] date string
             #@return [symbol] order dmy or ymd
             #@note called when no separator is found on string
             #@note might not work well for years < 1970 or > 2020
             #@note experimental
             def no_separator_order string
-                if string[0..1].to_i <= 31 and string[2..3].to_i <= 12 and string[4..7].to_i >= 1970 
+                if string[0..1].to_i <= 31 and string[2..3].to_i <= 12 and string[4..7].to_i >= 1970
                     return :dmy
                 elsif string[0..3].to_i >= 1970 and string[4..5].to_i and string[6..7].to_i <= 31
                     return :ymd
@@ -141,11 +155,11 @@ class Time
     end
 
     #@param params [Hash] hash of time to be added {:time => amount } (can take several at once)
-    #@return [Time] new time object with date set to the result 
+    #@return [Time] new time object with date set to the result
     # @example add time
     #  t = Time.now()
     #  t.add(:year => 1 ) #=> a time object set for 365 days from now
-    #  t.add(:year => 2, :day => 1 ) #=>  a time object set 731 days from now    
+    #  t.add(:year => 2, :day => 1 ) #=>  a time object set 731 days from now
     #  accepts :year :month :day :minute :hour :second :week
     def add params
         seconds = get_seconds params
@@ -153,7 +167,7 @@ class Time
     end
 
     #@param params [Hash] hash of time to be added {:time => amount } (can take several at once)
-    #@return [Time] new time object with date set to the result 
+    #@return [Time] new time object with date set to the result
     # @example substract time
     #  t = Time.now()
     #  t.substract(:year => 1 ) returns a time object set for 365 days ago
@@ -163,7 +177,6 @@ class Time
         seconds = get_seconds params
         return self - seconds
     end
-
     private
         #@note may not account for leap years etc
         def get_seconds params
@@ -183,4 +196,6 @@ class Time
             return seconds
         end
 
+end
+class InvalidTimeStringFormat < StandardError
 end

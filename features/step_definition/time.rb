@@ -58,3 +58,31 @@ Then /^my Time object should be like "([^"]*)"$/ do |obj|
     @result.to_i.should == expected.to_i
 end
 
+Given /I have a complete time string "(.+?)" then it should be like "(.+?)"/ do |string, parse|
+    parsed = eval parse
+    time   = Time.strtotime string
+
+    parsed.to_i.should == time.to_i 
+end
+
+
+Given /^I have the string "(.*?)"$/ do |arg1|
+    @string = arg1
+end
+
+When /^I try to run strtotime I should get a InvalidStringFormat$/ do
+
+#    assert_raise(InvalidTimeStringFormat) do
+ #       Time.strtotime @string
+ #   end
+    passed = false
+    begin 
+        Time.strtotime @string
+    rescue InvalidTimeStringFormat
+        passed = true
+    end
+
+    passed.should == true
+
+end
+
