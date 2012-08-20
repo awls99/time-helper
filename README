@@ -2,6 +2,7 @@ This gem adds a few methods to Time, both instance and class.
 It's not great, but makes my life easier on a few cucumber based projects.
 There's a method Time.strtotime which takes a date(time) string and turns it into a time object.
 Also method add and substract to the instance. (Important, these methods do not account for leap years and months, etc, one month is 30 days and 1 year is 365 days.)
+=~ to see if two Time objects are "close enough"
 
 Usage examples:
 
@@ -41,6 +42,9 @@ Time.parse does not work well with non-American formats, if like me, you're work
 mat like: DD/MM/YYYY Time.parse will not do. In fact, if you rewrite strtotime so it just calls parse a few of the tests 
 included will fail.
 
+New in 1.3.1
+Added =~ method which allows you to see if two time objects are close enough, by default it compares up till the hour, for instance, a =~ b will be true if a and b are both objects with the same year, month, day and hour.
+Removed all the aborts! Replaced be real errors inside the class! Sorry for the mess. 
 
 New in 1.3:
 Added support for time strings in the format you'd usualy pass to Time.parse

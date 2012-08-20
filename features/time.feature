@@ -90,7 +90,24 @@ Examples:
 | Wed May 30 11:11:38 UTC 2012 | Time.parse('Wed May 30 11:11:38 UTC 2012') |
 | Wed May 30 11:11:38 GMT 2012 | Time.parse('Wed May 30 11:11:38 GMT 2012') |
 
+
 @time @errors
-Scenario: Testing Time Errors
-Given I have the string "3247y9208u4" 
-When I try to run strtotime I should get a InvalidStringFormat 
+  Scenario Outline: Testing Time Input Errors
+    Given I have the string "<input>"
+    When I try to run strtotime I should get a "<error_class>"
+  Examples:
+    | input        | error_class |
+    | 12-11/11 | GenericInputError |
+    | 12-11-1111:11:11 | GenericInputError |
+    | 3247y9208u4 | InvalidTimeStringFormat |
+
+@time @comparison
+Scenario Outline: Comparing Times with =~
+    Then Comparing time object "<timeA>" with "<timeB>" by the "<min>" will be "<result>"
+ Examples:
+    | timeA | timeB | min | result |
+    | Time.now | Time.now.add(:minute => 5 ) | hour | true | 
+    | Time.now | Time.now.add(:minute => 5 ) | min | false | 
+    | Time.now | Time.now.add(:hour => 5 ) | hour | false | 
+    | Time.strtotime('11-01-2000') | Time.strtotime('11-05-2000') | year | true | 
+    | Time.now | Time.now.add(:year => 5 ) | :min | false | 

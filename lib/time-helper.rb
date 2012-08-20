@@ -1,4 +1,5 @@
-#@version 1.3.0
+#encoding: utf-8
+#@version 1.3.1
 #@author Arthur
 class Time
     require 'time'
@@ -92,7 +93,7 @@ class Time
                 separators = string.match( /\d{2,4}(.)?\d{2}(.)?\d{2,4}/ )
                 return nil unless separators[1]
 
-                abort 'separators must be equal'  unless separators[2] == separators[1]
+                raise GenericInputError.new 'separators must be equal'  unless separators[2] == separators[1]
                 return separators[2]
             end
             #@param string [String] datetime string
@@ -108,7 +109,7 @@ class Time
                 return nil if string.match /\d{14}/
                 separators = string.match(/(.)\d{2}:\d{2}:\d{2}$/)
                 return separators[1] if separators[1]
-                abort 'could not find date time separator'
+                raise GenericInputError.new 'could not find date time separator'
             end
             #see Time#get_order
             def get_dt_order string
@@ -132,7 +133,7 @@ class Time
                     elsif year.match( dy ) and day.match( yd )
                         return :ymd
                     else
-                        abort 'can\'t find order'
+                        raise GenericInputError.new 'can\'t find order'
                     end
                 else
                     return no_separator_order string
@@ -150,7 +151,7 @@ class Time
                 elsif string[0..3].to_i >= 1970 and string[4..5].to_i and string[6..7].to_i <= 31
                     return :ymd
                 end
-                abort 'can\'t find order'
+                raise GenericInputError.new 'can\'t find order'
             end
     end
 
@@ -196,6 +197,33 @@ class Time
             return seconds
         end
 
-end
-class InvalidTimeStringFormat < StandardError
+    public
+#compares if two Time objects are close enough to each other
+#@param other_time [Time] time to be compared to
+#@param smallest_unit [Symbol] smallest unit of time to check if it's the same
+# @example
+# a = Time.now
+# b = Time.now.add(:day = 1)
+# a =~ b
+# => false
+# a.=~ b,:month
+# => true
+#@note to compare up to the hour you just need var =~ other_var,
+# but to pass the second argument you must use var.=~(other_var, :min)
+#@note minute is :min seconds is :sec
+    def =~(other_time, smallest_unit = :hour)
+        raise InvalidArgument.new('Argument must be an instance of Time') unless other_time.class == Time
+        equal = true
+        [:year, :month, :day, :hour, :min, :sec].each do |method|
+            self_unit, other_unit = self.method(method).call(), other_time.method(method).call()
+            equal = false unless self_unit == other_unit
+            break if method == smallest_unit
+        end
+        return equal
+    end
+
+##### Errors #####
+    class GenericInputError < StandardError; end
+    class InvalidArgument < GenericInputError; end
+    class InvalidTimeStringFormat < GenericInputError; end
 end

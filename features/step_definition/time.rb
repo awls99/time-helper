@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Given /^I have the date (.+?) with (.+?)$/ do |time_string, time_obj|
     @time_string  = time_string
     @control_time = eval time_obj
@@ -70,7 +71,7 @@ Given /^I have the string "(.*?)"$/ do |arg1|
     @string = arg1
 end
 
-When /^I try to run strtotime I should get a InvalidStringFormat$/ do
+When /^I try to run strtotime I should get a "(.*)"$/ do |error_class|
 
 #    assert_raise(InvalidTimeStringFormat) do
  #       Time.strtotime @string
@@ -78,11 +79,21 @@ When /^I try to run strtotime I should get a InvalidStringFormat$/ do
     passed = false
     begin 
         Time.strtotime @string
-    rescue InvalidTimeStringFormat
+    rescue Time.const_get( error_class )
         passed = true
     end
 
     passed.should == true
+
+end
+
+Then /^Comparing time object "(.*)" with "(.*)" by the "(.*)" will be "(.*)"/ do |a,b,min,r|
+    timeA  = eval a
+    timeB  = eval b
+    min    = min.to_sym
+    result = eval r
+
+    timeA.=~( timeB, min ).should == result
 
 end
 

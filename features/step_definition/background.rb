@@ -1,6 +1,7 @@
+# -*- encoding : utf-8 -*-
 Given /^I load Time dependencies$/ do
-    common_folder = File.dirname(__FILE__) + '/../../'
-    require common_folder + 'lib/time-helper'
+    require 'time'
+    require File.dirname(__FILE__) + '/../../lib/time-helper'
     #declare Time::Test here so it doesn't get loaded when not needed
     class Testing < Time
         class << self
@@ -11,5 +12,3 @@ Given /^I load Time dependencies$/ do
         end
     end
 end
-
-
