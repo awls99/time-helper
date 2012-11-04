@@ -79,18 +79,6 @@ Scenario: Get Yesterday's date
 Given I want "yesterday"'s date
 Then my Time object should be like "Time.now.substract(:day => 1)"
 
-
-@time @parse
-Scenario Outline: Parse other time strings
-Given I have a complete time string "<string>" then it should be like "<time_parse>"
-
-Examples:
-| string | time_parse |
-| 2012-05-30T12:11:38.694+01:00 | Time.parse('2012-05-30T12:11:38.694+01:00') |
-| Wed May 30 11:11:38 UTC 2012 | Time.parse('Wed May 30 11:11:38 UTC 2012') |
-| Wed May 30 11:11:38 GMT 2012 | Time.parse('Wed May 30 11:11:38 GMT 2012') |
-
-
 @time @errors
   Scenario Outline: Testing Time Input Errors
     Given I have the string "<input>"
@@ -103,11 +91,15 @@ Examples:
 
 @time @comparison
 Scenario Outline: Comparing Times with =~
-    Then Comparing time object "<timeA>" with "<timeB>" by the "<min>" will be "<result>"
+    Then comparing TimeA with TimeB with an acceptable difference of delta seconds will yeild a true or false result
+    | TimeA  | <timeA>  |
+    | TimeB  | <timeB>  |
+    | delta  | <delta>  | 
+    | result | <result> | 
  Examples:
-    | timeA | timeB | min | result |
-    | Time.now | Time.now.add(:minute => 5 ) | hour | true | 
-    | Time.now | Time.now.add(:minute => 5 ) | min | false | 
-    | Time.now | Time.now.add(:hour => 5 ) | hour | false | 
-    | Time.strtotime('11-01-2000') | Time.strtotime('11-05-2000') | year | true | 
-    | Time.now | Time.now.add(:year => 5 ) | :min | false | 
+    | timeA | timeB | delta | result |
+    | Time.now | Time.now.add(:minute => 5 ) | 300 | true | 
+    | Time.now | Time.now.add(:minute => 5 ) | 299 | false | 
+    | Time.now | Time.now.add(:hour => 5 ) | 3600 | false | 
+    | Time.strtotime('11-01-2000') | Time.strtotime('11-05-2000') | 31536000 | true | 
+    | Time.now | Time.now.add(:year => 5 ) | 60 | false | 

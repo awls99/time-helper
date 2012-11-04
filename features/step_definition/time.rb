@@ -87,13 +87,13 @@ When /^I try to run strtotime I should get a "(.*)"$/ do |error_class|
 
 end
 
-Then /^Comparing time object "(.*)" with "(.*)" by the "(.*)" will be "(.*)"/ do |a,b,min,r|
-    timeA  = eval a
-    timeB  = eval b
-    min    = min.to_sym
-    result = eval r
-
-    timeA.=~( timeB, min ).should == result
-
+Then /^comparing TimeA with TimeB with an acceptable difference of delta seconds will yeild a true or false result$/ do |table|
+     info = table.rows_hash
+     puts info.inspect
+     %w[TimeA TimeB delta result].each do |var| 
+        info[ var ] = eval info[ var ]
+     end
+     result = info['TimeA'].=~ info['TimeB'], info['delta']
+     result.should == info['result']
 end
 

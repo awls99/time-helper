@@ -1,8 +1,7 @@
 #encoding: utf-8
-#@version 1.3.1
+#@version 2.0.0 
 #@author Arthur
 class Time
-    require 'time'
     #class methods
     class << self
         #@param string [String] a datetime string with many possible formats
@@ -10,11 +9,7 @@ class Time
         #@return [Time] set in the date of the string passed
         def strtotime string
             unless valid_datetime? string
-                begin
-                    return Time.parse(string)
-                rescue 
-                    raise InvalidTimeStringFormat
-                end
+                raise InvalidTimeStringFormat
             end
             h,m,s = 0,0,0
 
@@ -200,26 +195,22 @@ class Time
     public
 #compares if two Time objects are close enough to each other
 #@param other_time [Time] time to be compared to
-#@param smallest_unit [Symbol] smallest unit of time to check if it's the same
+#@param acceptable_diff [Fixnum]
 # @example
 # a = Time.now
 # b = Time.now.add(:day = 1)
 # a =~ b
 # => false
-# a.=~ b,:month
+# a.=~ b, 86400
 # => true
 #@note to compare up to the hour you just need var =~ other_var,
 # but to pass the second argument you must use var.=~(other_var, :min)
 #@note minute is :min seconds is :sec
-    def =~(other_time, smallest_unit = :hour)
+    def =~(other_time, acceptable_diff = 300 )
         raise InvalidArgument.new('Argument must be an instance of Time') unless other_time.class == Time
-        equal = true
-        [:year, :month, :day, :hour, :min, :sec].each do |method|
-            self_unit, other_unit = self.method(method).call(), other_time.method(method).call()
-            equal = false unless self_unit == other_unit
-            break if method == smallest_unit
-        end
-        return equal
+        raise InvalidArgument.new('Argument must be fix number') unless acceptable_diff.class == Fixnum
+        diff = self.to_i - other_time.to_i
+        return ( diff.abs <= acceptable_diff  )
     end
 
 ##### Errors #####
