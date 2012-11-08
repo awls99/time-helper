@@ -97,3 +97,7 @@ Then /^comparing TimeA with TimeB with an acceptable difference of delta seconds
      result.should == info['result']
 end
 
+Then /^date string "(.*?)"'s validity is "(.*?)"$/ do |string, validity|
+    result = eval validity
+    Time.valid_datetime?( string ).should == result
+end

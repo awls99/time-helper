@@ -2,6 +2,8 @@
 #@version 2.0.0 
 #@author Arthur
 class Time
+    #datetime regex
+    DateTimeRegex = /^\d{2}|\d{4}[^\d]?\d{2}[^\d]?\d{2}|\d{4}(?:[^\d]?\d{2}:?\d{2}:?\d{2})?$/
     #class methods
     class << self
         #@param string [String] a datetime string with many possible formats
@@ -44,7 +46,14 @@ class Time
         #@param string [String] datetime string
         #@return [Boolean]
         def valid_datetime? string
-            return false unless string.match /^\d{2,4}.?\d{2}.?\d{2,4}(?:.?\d{2}:?\d{2}:?\d{2})?$/
+            valid_number_only_date_sizes = [8,14]
+            valid_date_sizes             = [10, 19]
+            if string.match /^\d+$/
+                return false unless valid_number_only_date_sizes.include? string.length
+            else
+                return false unless valid_date_sizes.include? string.length
+            end
+            return false unless string.match DateTimeRegex
             return true
         end
         #@return [Time] Time object set 24 hours ago
