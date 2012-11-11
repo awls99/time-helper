@@ -4,6 +4,9 @@ There's a method Time.strtotime which takes a date(time) string and turns it int
 Also method add and substract to the instance. (Important, these methods do not account for leap years and months, etc, one month is 30 days and 1 year is 365 days.)
 =~ to see if two Time objects are "close enough"
 
+Time:: DateTimeRegex a regex for verifying if a string might represent a date
+
+
 Usage examples:
 
 Time.strtotime date_string
@@ -42,9 +45,12 @@ time_obj.=~ other_time, 360 # true or false if the difference is less than 6 min
 *How is this diferent than just "Time.parse"?*
 **********************************************
 
-Time.parse does not work well with non-American formats, if like me, you're working with strings that have dates in a for
-mat like: DD/MM/YYYY Time.parse will not do. In fact, if you rewrite strtotime so it just calls parse a few of the tests 
+Time.parse does not work well with non-American formats, if like me, you're working with strings that have dates in a format like: DD/MM/YYYY Time.parse will not do. In fact, if you rewrite strtotime so it just calls parse a few of the tests 
 included will fail.
+
+New in 2.0.1
+Fixed an issue/bug where a few non date number sequences would be evaluated as date by ::valid_datetime? due to the a liniency in the validating regex.
+The verification regex is now available for public as a constant: Time::DateTimeRegex
 
 New in 2.0.0
 Completelly changed =~ method, the second argument is now an acceptable difference in seconds - more reliable.
@@ -64,5 +70,3 @@ Tomorrow and Yesterday methods
 
 New in 1.1 
 I skiped this version.... because I suck at versioning 
-
-//End of README file\\

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'time-helper'
-  s.version     = '2.0.0'
+  s.version     = '2.0.1'
   s.date        = '2012-11-04'
   s.summary     = 'A few helper functions for the Time class.'
   s.description = <<EOF
